@@ -3,7 +3,7 @@ program SwissQRCodeDemoApp;
 {$I Version.INC}
 
 uses
-  {$IFDEF XEUP}Vcl.{$ENDIF}Forms,
+  {$IFDEF XEUP}Vcl.Forms{$ELSE}Forms{$ENDIF},
   uSwissQRCodeDemoApp in 'uSwissQRCodeDemoApp.pas' {frmMain},
   uTQRCodeCH in 'uTQRCodeCH.pas',
   uTCHKreuz in 'uTCHKreuz.pas',

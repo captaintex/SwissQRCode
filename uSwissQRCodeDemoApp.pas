@@ -7,15 +7,24 @@ unit uSwissQRCodeDemoApp;
 interface
 
 uses
-  {$IFDEF XEUP}Vcl.{$ENDIF}Graphics,
-  {$IFDEF XEUP}Vcl.{$ENDIF}Forms, 
-  {$IFDEF XEUP}Vcl.{$ENDIF}ExtCtrls, 
-  {$IFDEF XEUP}Vcl.{$ENDIF}StdCtrls, 
-  {$IFDEF XEUP}Vcl.{$ENDIF}ComCtrls, 
-  {$IFDEF XEUP}Vcl.{$ENDIF}Controls, 
-  {$IFDEF XEUP}System.{$ENDIF}Classes,
-  SysUtils
-  ;
+  {$IFDEF XEUP}
+  Vcl.Graphics,
+  Vcl.Forms,
+  Vcl.ExtCtrls,
+  Vcl.StdCtrls,
+  Vcl.ComCtrls,
+  Vcl.Controls,
+  System.Classes,
+  {$ELSE}
+  SysUtils,
+  Graphics,
+  Forms,
+  ExtCtrls,
+  StdCtrls,
+  ComCtrls,
+  Controls,
+  Classes;
+  {$ENDIF}
 
 type
    TfrmMain = class(TForm)
