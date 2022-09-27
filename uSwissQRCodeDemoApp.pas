@@ -2,16 +2,18 @@
 
 unit uSwissQRCodeDemoApp;
 
+{$I Version.INC}
+
 interface
 
 uses
-  Vcl.Graphics,
-  Vcl.Forms, 
-  Vcl.ExtCtrls, 
-  Vcl.StdCtrls, 
-  Vcl.ComCtrls, 
-  Vcl.Controls, 
-  System.Classes,
+  {$IFDEF XEUP}Vcl.{$ENDIF}Graphics,
+  {$IFDEF XEUP}Vcl.{$ENDIF}Forms, 
+  {$IFDEF XEUP}Vcl.{$ENDIF}ExtCtrls, 
+  {$IFDEF XEUP}Vcl.{$ENDIF}StdCtrls, 
+  {$IFDEF XEUP}Vcl.{$ENDIF}ComCtrls, 
+  {$IFDEF XEUP}Vcl.{$ENDIF}Controls, 
+  {$IFDEF XEUP}System.{$ENDIF}Classes,
   SysUtils
   ;
 

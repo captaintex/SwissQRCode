@@ -1,7 +1,9 @@
 program SwissQRCodeDemoApp;
 
+{$I Version.INC}
+
 uses
-  Vcl.Forms,
+  {$IFDEF XEUP}Vcl.{$ENDIF}Forms,
   uSwissQRCodeDemoApp in 'uSwissQRCodeDemoApp.pas' {frmMain},
   uTQRCodeCH in 'uTQRCodeCH.pas',
   uTCHKreuz in 'uTCHKreuz.pas',
@@ -11,7 +13,9 @@ uses
 
 begin
   Application.Initialize;
+  {$IFDEF XEUP}
   Application.MainFormOnTaskbar := True;
+  {$ENDIF}
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.

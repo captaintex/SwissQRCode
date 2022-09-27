@@ -56,12 +56,13 @@
 
 unit uTQRCodeCH;
 
-interface
+{$I Version.INC}
 
-uses  System.Classes, 
-      System.SysUtils, 
-      Vcl.Graphics, 
-      Winapi.Windows 
+interface
+uses  {$IFDEF XEUP}System.{$ENDIF}Classes, 
+      {$IFDEF XEUP}System{$ENDIF}SysUtils, 
+      {$IFDEF XEUP}Vcl{$ENDIF}Graphics, 
+      {$IFDEF XEUP}Winapi.{$ENDIF}Windows 
       ;
 
 const
@@ -123,9 +124,9 @@ type
       iQRCH_RuheZoneUmlaufendInMM     : integer;  
       // -------------------------------------------------------------------------- //
       sQRCode              : string;
-      QRCodeBitmap         : Vcl.Graphics.TBitmap;
-      QRCodeCHKreuzBitmap  : Vcl.Graphics.TBitmap;
-      QRCodeSkaliert       : Vcl.Graphics.TBitmap;
+      QRCodeBitmap         : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap;
+      QRCodeCHKreuzBitmap  : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap;
+      QRCodeSkaliert       : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap;
 //      QRCodeSkaliert : TPaintBox;
 //      TempPaintBox   : TPaintBox;
       
@@ -386,9 +387,9 @@ type
       property QRCH_Fehlerkorrekturstufe  : string  read sQRCH_Fehlerkorrekturstufe;
       property QRCH_CodeAsString          : string  read F_Get_QRCodeAsString;
 
-      property QRCH_CHKreuzBitmap         : Vcl.Graphics.TBitmap     read QRCodeCHKreuzBitmap;          
-      property QRCH_CodeBitmap            : Vcl.Graphics.TBitmap     read QRCodeBitmap;
-      property QRCH_QRCodeSkaliert        : Vcl.Graphics.TBitmap     read QRCodeSkaliert;  
+      property QRCH_CHKreuzBitmap         : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap     read QRCodeCHKreuzBitmap;          
+      property QRCH_CodeBitmap            : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap     read QRCodeBitmap;
+      property QRCH_QRCodeSkaliert        : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap     read QRCodeSkaliert;  
       
 
    end;
@@ -450,9 +451,14 @@ var
    Row, Column : integer;
 begin
    if self.QRCodeCHKreuzBitmap = nil then 
-      self.QRCodeCHKreuzBitmap := Vcl.Graphics.TBitmap.Create;
+      self.QRCodeCHKreuzBitmap := {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap.Create;
             
+  {$IFDEF XEUP}
    self.QRCodeCHKreuzBitmap.SetSize(uTCHKreuz.ArraySize, uTCHKreuz.ArraySize);
+  {$ELSE}
+  self.QRCodeCHKreuzBitmap.Width := uTCHKreuz.ArraySize;
+  self.QRCodeCHKreuzBitmap.Height := uTCHKreuz.ArraySize;
+  {$ENDIF}
    for Row := 0 to uTCHKreuz.ArraySize - 1 do begin
       for Column := 0 to uTCHKreuz.ArraySize - 1 do begin
          if uTCHKreuz.chkreuz[Row, Column] = 1 then begin
@@ -537,7 +543,7 @@ var
   qr_Matrix: TDelphiZXingQRCode;
   Row, Column: Integer;
   sidelength : integer;
-  tempCode, tempKreuz : Vcl.Graphics.TBitmap;
+  tempCode, tempKreuz : {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap;
 begin
    result := false;
    // QR Code als String zusammensetzen, nach Test ob alle Daten vorhanden sind
@@ -549,15 +555,20 @@ begin
          // Daten in QR abfüllen
          qr_Matrix.Data := self.QRCH_CodeAsString;
          // Codierungstyp festlegen (UTF-8 etc)
-         qr_Matrix.Encoding := TQRCodeEncoding.qrUTF8NoBOM;
+         qr_Matrix.Encoding := {$IFDEF XEUP}TQRCodeEncoding.{$ENDIF}qrUTF8NoBOM;
          // Fehlerlevel definieren : 0 (M) 1 (L) 2 (H) 3 (Q)
          qr_Matrix.ErrorCorrectionLevel := 1; // self.sQRCH_Fehlerkorrekturstufe; // 1 entspricht M
          // Ruhezone festlegen
          // 5mm ist empfohlen -> Umrechnen mit den Bildschirmpixel
          qr_Matrix.QuietZone := 0; //StrToIntDef(edtQuietZone.Text, 4);
          // Grösse der Anzeige bzw. Bitmap aufgrund der Grösse des Codes definieren
-         if self.QRCodeBitmap = nil then self.QRCodeBitmap := Vcl.Graphics.TBitmap.Create;
+         if self.QRCodeBitmap = nil then self.QRCodeBitmap := {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap.Create;
+         {$IFDEF XEUP}
          self.QRCodeBitmap.SetSize(qr_Matrix.Rows, qr_Matrix.Columns);
+         {$ELSE}
+         self.QRCodeBitmap.Width := qr_Matrix.Columns;
+         self.QRCodeBitmap.Height := qr_Matrix.Rows;
+         {$ENDIF}
          for Row := 0 to qr_Matrix.Rows - 1 do begin
             for Column := 0 to qr_Matrix.Columns - 1 do begin
                if (qr_Matrix.IsBlack[Row, Column]) then begin
@@ -575,14 +586,14 @@ begin
          sidelength := uTQRCodeCH.F_SkalierungsFaktorQRCode(self.QRCodeBitmap.Canvas);
    
          // Code zeichnen
-         tempCode := Vcl.Graphics.TBitmap.Create;
+         tempCode := {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap.Create;
          tempCode.Width := sidelength;
          tempCode.Height:= sidelength;
          tempCode.Canvas.StretchDraw(Rect( 0, 0, sidelength, sidelength ), self.QRCodeBitmap);
    
 
          //Seitenlaenge für CH-Kreuz bestimmt (auf 7mm setzen)
-         tempKreuz  := Vcl.Graphics.TBitmap.Create;
+         tempKreuz  := {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap.Create;
          sidelength := uTQRCodeCH.F_SkalierungsFaktorCHKreuz(self.QRCodeCHKreuzBitmap.Canvas);
          //CH-Kreuz in Code kopieren
          tempKreuz.Width  := sidelength; 
@@ -599,7 +610,7 @@ begin
                                    Rect(  0, 0, sidelength, sidelength ) 
                                  );
 
-         if self.QRCodeSkaliert = nil then self.QRCodeSkaliert := Vcl.Graphics.TBitmap.Create;
+         if self.QRCodeSkaliert = nil then self.QRCodeSkaliert := {$IFDEF XEUP}Vcl.{$ENDIF}Graphics.TBitmap.Create;
          self.QRCodeSkaliert := tempCode;
 
          result := ( self.QRCodeBitmap <> nil ) and ( self.QRCodeCHKreuzBitmap <> nil );
